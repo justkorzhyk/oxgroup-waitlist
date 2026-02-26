@@ -239,6 +239,31 @@ h1 {
   cursor: default;
 }
 
+.country-select {
+  width: 100%;
+  height: 50px;
+  padding: 0 22px;
+  border-radius: 100px;
+  border: 1px solid var(--faint);
+  background: rgba(255,255,255,0.04);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+}
+.country-select:focus {
+  border-color: var(--blue);
+  background-color: rgba(110,150,251,0.06);
+}
+.country-select option { background: #1a1d27; color: var(--white); }
+
 .form-hint {
   font-size: 13px;
   color: rgba(255,255,255,0.28);
@@ -374,6 +399,32 @@ footer a:hover { color: var(--white); }
 
       <!-- Email form -->
       <div class="form">
+        <select id="country-select" class="country-select">
+          <option value="" disabled selected>Select your country</option>
+          <option>United Kingdom</option>
+          <option>United States</option>
+          <option>Australia</option>
+          <option>Canada</option>
+          <option>Ireland</option>
+          <option>New Zealand</option>
+          <option>Germany</option>
+          <option>France</option>
+          <option>Netherlands</option>
+          <option>Spain</option>
+          <option>Italy</option>
+          <option>Sweden</option>
+          <option>Norway</option>
+          <option>Denmark</option>
+          <option>Switzerland</option>
+          <option>Belgium</option>
+          <option>Austria</option>
+          <option>Poland</option>
+          <option>Portugal</option>
+          <option>Singapore</option>
+          <option>United Arab Emirates</option>
+          <option>South Africa</option>
+          <option>Other</option>
+        </select>
         <div class="form-row">
           <input id="email-input" type="email" class="email-input" placeholder="Enter your work email">
           <button id="submit-btn" class="submit-btn" onclick="joinWaitlist()">Join Waitlist</button>
@@ -420,9 +471,10 @@ footer a:hover { color: var(--white); }
   const KLAVIYO_LIST_ID   = 'VqXF7p';
 
   async function joinWaitlist() {
-    const input = document.getElementById('email-input');
-    const btn   = document.getElementById('submit-btn');
-    const email = input.value.trim();
+    const input   = document.getElementById('email-input');
+    const btn     = document.getElementById('submit-btn');
+    const country = document.getElementById('country-select').value;
+    const email   = input.value.trim();
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       input.classList.add('error');
@@ -444,7 +496,17 @@ footer a:hover { color: var(--white); }
             type: 'subscription',
             attributes: {
               list_id: KLAVIYO_LIST_ID,
-              email: email
+              email: email,
+              ...(country && { custom_source: country }),
+              profile: {
+                data: {
+                  type: 'profile',
+                  attributes: {
+                    email: email,
+                    location: { country: country || undefined }
+                  }
+                }
+              }
             }
           }
         })
