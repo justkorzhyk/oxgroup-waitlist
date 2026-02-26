@@ -399,7 +399,8 @@ footer a:hover { color: var(--white); }
 
       <!-- Email form -->
       <div class="form">
-        <select id="country-select" class="country-select">
+          <input id="email-input" type="email" class="email-input" placeholder="Enter your work email">
+          <select id="country-select" class="country-select">
           <option value="" disabled selected>Select your country</option>
           <option>United Kingdom</option>
           <option>United States</option>
@@ -425,10 +426,7 @@ footer a:hover { color: var(--white); }
           <option>South Africa</option>
           <option>Other</option>
         </select>
-        <div class="form-row">
-          <input id="email-input" type="email" class="email-input" placeholder="Enter your work email">
           <button id="submit-btn" class="submit-btn" onclick="joinWaitlist()">Join Waitlist</button>
-        </div>
         <p class="form-hint">Free to join &nbsp;·&nbsp; No credit card &nbsp;·&nbsp; Unsubscribe anytime</p>
       </div>
 
