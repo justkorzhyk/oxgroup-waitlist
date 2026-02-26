@@ -583,7 +583,6 @@ footer a:hover { color: var(--white); }
           data: {
             type: 'subscription',
             attributes: {
-              list_id: KLAVIYO_LIST_ID,
               profile: {
                 data: {
                   type: 'profile',
@@ -592,6 +591,11 @@ footer a:hover { color: var(--white); }
                     ...(country && { location: { country } })
                   }
                 }
+              }
+            },
+            relationships: {
+              list: {
+                data: { type: 'list', id: KLAVIYO_LIST_ID }
               }
             }
           }
