@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register Dealer Account — OX Group</title>
+<title>OXGroup | Dealer </title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Barlow+Condensed:wght@800&display=swap" rel="stylesheet">
@@ -36,46 +36,17 @@ body {
   align-items: center;
 }
 
-/* ── Header ─────────────────────────────────────── */
-header {
-  width: 100%;
-  background: var(--header-bg);
-  border-bottom: 2px solid var(--border);
-  flex-shrink: 0;
-}
 
-.header-inner {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 16px 80px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.logo { height: 40px; width: 240px; display: block; }
 
-.logo { height: 24px; width: auto; display: block; }
-
-.header-link {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 4px;
-}
 
 /* ── Section ─────────────────────────────────────── */
 .section {
   width: 100%;
   flex: 1;
   display: flex;
-  padding-right: 80px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ── Left image ──────────────────────────────────── */
@@ -96,11 +67,11 @@ header {
 
 /* ── Right content ───────────────────────────────── */
 .content-wrapper {
-  flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
+  overflow-y: auto;
 }
 
 .content {
@@ -109,7 +80,8 @@ header {
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 48px 0 48px 0;
+  padding: 64px 0 80px 0;
+  position: relative;
 }
 
 /* ── Stepper ─────────────────────────────────────── */
@@ -412,9 +384,6 @@ footer {
 </head>
 <body>
 
-<!-- Header -->
-
-
 <!-- Section -->
 <div class="section">
 
@@ -427,8 +396,7 @@ footer {
   <div class="content-wrapper">
   <div class="content">
 
-    <!-- Animated logo -->
-    <div id="lottie-logo" style="width: 160px; height: 160px; mix-blend-mode: lighten;"></div>
+     <img class="logo" src="logo.png" alt="OX Group">
 
     <!-- Stepper -->
     <div class="stepper">
@@ -582,6 +550,12 @@ footer {
         <div class="success-icon">✓</div>
         <h2>Application Submitted</h2>
         <p>Thank you for registering. Our team will review your application and be in touch within 24–48 hours.</p>
+        <button class="btn-primary" onclick="window.location.href='/'">
+          Register another person
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4.167 10h11.666M10 4.167L15.833 10 10 15.833" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
 
     </div>
@@ -601,16 +575,13 @@ footer {
 </footer>
 
 <script>
-  // Animated logo
-  lottie.loadAnimation({
-    container: document.getElementById('lottie-logo'),
-    renderer: 'svg',
-    loop: true,
-    autoplay: true,
-    path: '/OXGROUP_AnimatedLogoLoop 1.json'
-  });
+  // EmailJS — fill in your credentials from emailjs.com
+  const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // Account → API Keys
+  const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // Email Services tab
+  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // Email Templates tab
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-  // Clear T&C error on check
+// Clear T&C error on check
   document.getElementById('check-terms-tuff').addEventListener('change', function () {
     if (this.checked) this.closest('.checkbox-row').classList.remove('checkbox-error');
   });
@@ -785,8 +756,25 @@ footer {
       );
 
       if (res.status === 202) {
+        // Send email notification to korzhb@gmail.com
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          dealer_name:     document.getElementById('dealer-name').value.trim(),
+          country:         _cdValue,
+          city:            document.getElementById('city').value.trim(),
+          street_address:  document.getElementById('street-address').value.trim(),
+          zip_code:        document.getElementById('zip-code').value.trim(),
+          first_name:      firstName,
+          last_name:       lastName,
+          email:           email,
+          phone:           document.getElementById('phone').value.trim() || '—',
+          consent_email:   document.getElementById('check-email-promo').checked ? 'Yes' : 'No',
+          consent_surveys: document.getElementById('check-surveys').checked ? 'Yes' : 'No',
+        }).catch(err => console.warn('[emailjs] notification failed:', err));
+
         document.getElementById('step2-panel').classList.add('hidden');
         document.getElementById('success-panel').classList.add('visible');
+        document.querySelector('.section-title').style.display = 'none';
+        document.querySelector('.stepper').style.display = 'none';
       } else {
         btn.innerHTML = 'Register Account <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.167 10h11.666M10 4.167L15.833 10 10 15.833" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         btn.disabled = false;
